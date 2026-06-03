@@ -1,0 +1,32 @@
+# Keep the build context small and reproducible.
+.git
+.github
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Local state — never bake in
+.env
+.env.*
+!.env.template
+.medusa
+build
+dist
+coverage
+*.log
+.cache
+
+# Yarn caches (re-downloaded during `yarn install --immutable`)
+.yarn/cache
+.yarn/install-state.gz
+.yarn/unplugged
+.yarn/build-state.yml
+
+# Test infra not needed at runtime
+integration-tests
+jest.config.js
+
+# The Dockerfile itself doesn't need to be in the image
+Dockerfile
+README.md
