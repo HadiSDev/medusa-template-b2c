@@ -10,7 +10,11 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
  *
  * This route serves a tiny HTML page that:
  *   1. Reads the JWT from the URL fragment.
- *   2. Writes it into the `medusa_auth` cookie the admin SPA reads on load.
+ *   2. POSTs it to /auth/session as a Bearer token — the Medusa core
+ *      handler stores the auth context in req.session, and express-session
+ *      issues a `connect.sid` cookie that the admin SPA relies on (the SPA
+ *      is initialized with auth.type="session", so it never reads the JWT
+ *      itself — it just sends the session cookie on every request).
  *   3. Replaces history with `/app` (so the back button doesn't bounce
  *      the user back to /sso#token=...).
  *
@@ -38,10 +42,15 @@ export async function GET(_req: MedusaRequest, res: MedusaResponse) {
       var hash = (window.location.hash || "").replace(/^#/, "");
       var params = new URLSearchParams(hash);
       var token = params.get("token");
-      if (token) {
-        try { window.localStorage.setItem("medusa_auth_token", token); } catch (_) {}
-      }
-      window.location.replace("/app");
+      function done() { window.location.replace("/app"); }
+      if (!token) return done();
+      // Medusa admin SPA runs with auth.type="session" — the JWT is exchanged
+      // for a server-set session cookie via POST /auth/session.
+      fetch("/auth/session", {
+        method: "POST",
+        credentials: "include",
+        headers: { Authorization: "Bearer " + token },
+      }).then(done, done);
     })();
   </script>
 </body>
