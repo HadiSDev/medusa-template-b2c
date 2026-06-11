@@ -39,12 +39,7 @@ export async function GET(_req: MedusaRequest, res: MedusaResponse) {
       var params = new URLSearchParams(hash);
       var token = params.get("token");
       if (token) {
-        // Same shape Medusa admin's first login writes:
-        // cookie name 'medusa_auth', path /, SameSite Lax (default).
-        // Max-Age 86400 mirrors the JWT's 24h expiry the auth provider hands out.
-        var attrs = "; Path=/; Max-Age=86400; SameSite=Lax";
-        if (window.location.protocol === "https:") attrs += "; Secure";
-        document.cookie = "medusa_auth=" + encodeURIComponent(token) + attrs;
+        try { window.localStorage.setItem("medusa_auth_token", token); } catch (_) {}
       }
       window.location.replace("/app");
     })();
