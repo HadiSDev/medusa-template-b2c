@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.15.3",
-    "@medusajs/cli": "2.15.3",
-    "@medusajs/framework": "2.15.3",
-    "@medusajs/medusa": "2.15.3"
+    "@medusajs/cli": "2.18.0",
+    "@medusajs/framework": "2.18.0",
+    "@medusajs/medusa": "2.18.0"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.15.3",
